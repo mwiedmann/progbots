@@ -1,0 +1,86 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<title>Progbots v0.9</title>
+</head>
+<body style="margin:0px">
+	<table style="border:0px">
+		<tr>
+			<td rowspan="2"><textarea id="botCode" rows="40" cols="50"></textarea></td>
+			<td><canvas id="myCanvas" width="400" height="400" style="border:solid"></canvas></td>
+		</tr>
+		<tr>
+			<td style="vertical-align:top">
+				<input type="button" id="btnStart" value="Start" style="vertical-align:top"/>
+				Speed: <input type="range" id="speed" min="1" max="100" value="50"  style="vertical-align:top"/>
+				<input type="button" id="btnNext" value="Next Level" style="vertical-align:top"/>
+				<input type="button" id="btnHelp" value="Help" style="vertical-align:top"/>
+				<div id="divGridCoords">Mouse X/Y Grid Position: </div>
+				<div id="divLevelHelp" style="-webkit-user-select: text;">Level Help</div>
+				<div id="instructions" style="position:absolute;left:1px;top:1px;background-color:white; white-space:pre-wrap;overflow-y:auto;display:none;"><input type="button" id="btnCloseInstr" value="close" /><h2>Welcome to Progbots - by Mark Wiedmann (mrwieds@gmail.com)</h2>The goal of each level is to program your bots to reach the exit. All the bots must reach the exit or the level is failed. The code you write will be sent to each bot, so the code needs to be generic enough to work for each bot, but specific enough to account for each bot's unique location and circumstances on the grid.
+		
+You can use any javascript you like but some special objects and properties are available for your code to use. This allows you to code your bots to get to the exit.
+<h4>API (Read Only): </h4>bot - This is used to access the properties of the current bot.
+bot.x - X position on the grid. 0=Left, maxX=Right
+bot.y - Y position on the grid. 0=Top, maxY=Bottom
+bot.bombs - Number of bombs the bot is carrying (default=0).
+bots - An array that holds all bots. Use this if you need to access bots other than the current bot, grid[i] or grid[botNum] is the current bot.
+i or botNum - The number of the current bot.
+count - Execution count for the level. Starts at 1. Increments each time all bots have executed code.
+maxX - Max X position on the grid.
+maxY - Max Y position on the grid.
+grid - Array of all obstacles on the grid.
+grid[NUM] - A grid object with the following properties:
+	id - Unique id for the object
+	x - X position on the grid.
+	y - Y position on the grid.
+	type - String for the type of object (examples: 'fire', 'exit', 'wall', 'hunter', 'bot')
+	kills - Can the object kill
+	solid - Is the object solid (can't move on top of it)
+	exit - Is an exit
+	userControled - Is a user controlled bot (runs your program)
+	ticks - # of remaining ticks on its timer (used for bombs)
+<h4>API for giving bots commands</h4>bot.action - What type of action the bot should take:
+	'move', 'm', or 1 - Move
+	'bomb', 'b', or 2 - Drop bomb on current position.
+	null or anything else - Do nothing
+bot.dir - What direction the bot should perform it's action:
+	'north', 'n', 'up', 'u', 1 - Up/North.
+	'east', 'e', 'right', 'r', 2 - Right/East.
+	'south', 's', 'down', 'd', 3 - Down/South.
+	'west', 'w', 'left', 'l', 4 - Left/West.
+bot.mem - You can use this to store any value you want. It carries over between iterations. It must be a serializable value (just stick to simple types and objects, no functions).
+Note: Bots will remember their action and direction from the previous iteration, so if you don't give them new commands, they will continue with the previous command. You can always set the bot.action=null to do nothing.
+<h4>Helper Functions</h4>The following helper functions are available for you to use:
+	objectAtPositionGet(x, y, idToIgnore) - Returns the first object at the x, y coordinate.
+	objectsAroundPositionGet(xOrig, yOrig, range, ignoreId) - Returns an array of objects around an x, y coordinate within range.
+	objectInDirectionGet(obj) - Returns the first object that 'obj' will collide with it if moves 1 square in its current direction. Error if obj.dir not set or invalid.
+	distance(x1, y1, x2, y2) - Distance between 2 points.
+<h4>Examples</h4>If you want your bots to move left:
+	bot.action=1;
+	bot.dir=4;
+		
+If you want your bots to move down (note this time we use strings instead of numbers. Either works fine.):
+	bot.action='m';
+	bot.dir='south';
+		
+If you want your bots to move right until they get to the center of the grid, then move up:
+	bot.action='move';
+	bot.dir='r';
+	if (bot.X == maxX / 2) bot.dir='up';
+		
+If you want your bots to move left for the first 3 iterations, then move down:
+	bot.action=1;
+	bot.dir='left';
+	if (count > 3) bot.dir='up';
+	</div>
+			</td>
+		</tr>
+	</table>
+
+    <iframe id="evalFrame" src="sandbox.html" style="display:none"></iframe>
+	<script type="text/javascript" src="levels.js"></script>
+	<script type="text/javascript" src="gridHelpers.js"></script>
+	<script type="text/javascript" src="progbots.js"></script>
+</body>
+</html>

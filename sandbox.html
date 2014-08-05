@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Sandbox</title>
+</head>
+<body>
+	<script type="text/javascript" src="gridHelpers.js"></script>
+	<script type="text/javascript">
+		var bots;
+		var maxX;
+		var maxY;
+		var count;
+		var grid;
+
+		function doEval(event) {
+			var valid = false;
+			var err = "";
+			maxX = event.data.maxX;
+			maxY = event.data.maxY;
+			count = event.data.count;
+			grid = event.data.grid;
+			bots = new Array();
+
+			for (var b = 0; b < grid.length; b++) {
+				if (grid[b].userControlled) bots.push(grid[b]);
+			}
+
+			try {
+				for (var i = 0; i < bots.length; i++) {
+					var botNum = i;
+					var bot = bots[i];
+
+					eval(event.data.botCode);
+
+					// Success. Code compiled/executed without error!
+					valid = true;
+				}
+			} catch (e) {
+				// Invalid code
+				err = e.message;
+			}
+			
+			// If the bot code put anything non-serializable in the grid, we may get an error here.
+			try {
+				event.source.postMessage({ 'valid': valid, 'grid': grid, 'err': err }, "*");
+			} catch (e) {
+				// Just post the message without the grid and show the error message.
+				event.source.postMessage({ 'valid': false, 'grid': null, 'err': e.message }, "*");
+			}
+		}
+
+		window.addEventListener("message", doEval, false);
+	</script>
+</body>
+</html>
