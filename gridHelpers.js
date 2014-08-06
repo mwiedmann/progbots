@@ -43,10 +43,10 @@ function objectInDirectionGet(obj) {
 	var x = obj.x;
 	var y = obj.y;
 
-	if (obj.dir == 1) y--;
-	else if (obj.dir == 2) x++;
-	else if (obj.dir == 3) y++;
-	else if (obj.dir == 4) x--;
+	if (obj.dir == 1 || obj.dir == 'u' || obj.dir == 'n') y--;
+	else if (obj.dir == 2 || obj.dir == 'r' || obj.dir == 'e') x++;
+	else if (obj.dir == 3 || obj.dir == 'd' || obj.dir == 's') y++;
+	else if (obj.dir == 4 || obj.dir == 'l' || obj.dir == 'w') x--;
 	else throw new UserException('Invalid direction: ' + obj.dir);
 
 	// If the bot is looking off the grid, return a temp/fake 'wall' as a helper
